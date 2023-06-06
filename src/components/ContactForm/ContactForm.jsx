@@ -1,17 +1,22 @@
-// import { Component } from 'react';
 import React, { useState } from 'react';
+// import PropTypes from 'prop-types';
 
 import { nanoid } from 'nanoid';
-import PropTypes from 'prop-types';
 import { AddBtn, Form, Input, FormName } from './ContactForm.styled';
 
-export const ContactForm = ({ add, contacts }) => {
+import { useDispatch, useSelector } from 'react-redux';
+import { addContact } from 'redux/ContactsSlice';
+import { getContacts } from 'redux/Selectors';
+
+export const ContactForm = () => {
   const [user, setUser] = useState({ name: '', number: '' });
+
+  const contactUser = useSelector(getContacts);
+  const dispatch = useDispatch();
+  // console.log(contactUser)
 
   const handleChangeName = e => {
     setUser({ ...user, name: e.currentTarget.value });
-//     const { name, value } = e.currentTarget;
-//     this.setState({ [name]: value });
   };
 
   const handleChangeNumber = e => {
@@ -29,15 +34,15 @@ export const ContactForm = ({ add, contacts }) => {
       number: user.number,
     };
 
-    if (contacts.find(item => item.name === user.name)) {
+    if (contactUser.find(item => item.name === user.name)) {
       alert(`${user.name} is already in contacts.`);
       return;
-    } else if (contacts.find(item => item.number === user.number)) {
+    } else if (contactUser.find(item => item.number === user.number)) {
       alert(`${user.number} is already in contacts.`);
       return;
     }
 
-    add(contact);
+    dispatch(addContact(contact));
     resetForm();
   };
 
@@ -79,7 +84,7 @@ export const ContactForm = ({ add, contacts }) => {
   );
 }
 
-ContactForm.propTypes = {
-    add: PropTypes.func.isRequired,
-    contacts: PropTypes.arrayOf(PropTypes.object).isRequired,
-  };
+// ContactForm.propTypes = {
+//     add: PropTypes.func.isRequired,
+//     contacts: PropTypes.arrayOf(PropTypes.object).isRequired,
+//   };
